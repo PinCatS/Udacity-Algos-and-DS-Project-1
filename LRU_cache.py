@@ -4,6 +4,9 @@ class DoubleNode:
         self.prev = None
         self.next = None
 
+    def __repr__(self):
+        return f"Node({self.value})"
+
 
 class DoubleLinkedList:
     def __init__(self):
@@ -12,7 +15,7 @@ class DoubleLinkedList:
         self.head.prev, self.head.next = None, self.tail
         self.tail.prev, self.tail.next = self.head, None
         
-        self.num_of_nodes = 0
+        self.num_of_nodes = 0  
     
     def append(self, value):
         node = DoubleNode(value)
@@ -55,7 +58,7 @@ class DoubleLinkedList:
         s = f"Head <->"
         node = self.head.next
         for _ in range(self.num_of_nodes):
-            s += f" Node({node.value}) <->"
+            s += f" {node} <->"
             node = node.next
         s += f" Tail"
 
@@ -64,30 +67,81 @@ class DoubleLinkedList:
 
 class LRU_Cache(object):
 
-    def __init__(self, capacity):
-        pass
+    def __init__(self, capacity = 10):
+        self.map = dict()
+        self.storage = DoubleLinkedList()
+        self.capacity = capacity
 
     def get(self, key):
         # Retrieve item from provided key. Return -1 if nonexistent.
+        if key in self.map:
+            node = self.map[key]
+            _, value = node.value
+            if node != self.storage.head.next:
+                self.storage.remove(node)
+                self.map[key] = self.storage.prepend((key, value))
+            return value
+
         return -1
 
     def set(self, key, value):
         # Set the value if the key is not present in the cache. If the cache is at capacity remove the oldest item.
-        pass
+        if key not in self.map:
+            if self._is_full():
+                # if at capacity, remove the oldest item and the key
+                oldest = self.storage.tail.prev
+                self.storage.remove(oldest)
+                key_of_oldest, _ = oldest.value
+                self.map.pop(key_of_oldest)
+        else:
+            # replace with the new value and put as the first in the list
+            self.storage.remove(self.map[key])
+        
+        self.map[key] = self.storage.prepend((key, value))
 
+    def _is_full(self):
+        return self.storage.size() == self.capacity
+
+    def __repr__(self):
+        s = f"map  => {{"
+        for k, v in self.map.items():
+            s += f"{k}: {v}, "
+        s += "}"
+        s += f"\nlist => {self.storage}"
+        return s
+
+# Tests
 our_cache = LRU_Cache(5)
+print(our_cache)
+
+res = our_cache.get(6)
+print(our_cache)
+print(res)
 
 our_cache.set(1, 1);
+print(our_cache)
 our_cache.set(2, 2);
+print(our_cache)
 our_cache.set(3, 3);
+print(our_cache)
 our_cache.set(4, 4);
+print(our_cache)
 
 
 res = our_cache.get(1)       # returns 1
+print(our_cache)
+print(res)
 res = our_cache.get(2)       # returns 2
+print(our_cache)
+print(res)
 res = our_cache.get(9)      # returns -1 because 9 is not present in the cache
+print(our_cache)
+print(res)
 
 our_cache.set(5, 5)
+print(our_cache)
 our_cache.set(6, 6)
+print(our_cache)
 
 res = our_cache.get(3)      # returns -1 because the cache reached it's capacity and 3 was the least recently used entry
+print(res)
