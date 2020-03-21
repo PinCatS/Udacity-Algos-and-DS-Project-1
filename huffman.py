@@ -65,7 +65,7 @@ def huffman_encoding(data):
     for c in data:
         encoded_data += codes[c]
     
-    return encoded_data, root
+    return encoded_data, root, codes
 
 
 """ While traversing attributes are removed to release some space in the tree
@@ -112,6 +112,16 @@ def huffman_decoding(data, tree):
 
     return s
 
+def huffman_decoding2(data, codes):
+    code = ""
+    msg = ""
+    for c in data:
+        code += c
+        if code in codes:
+            msg += codes[code]
+            code = ""
+    return msg
+
 
 def print_tree(root):
     if root is None:
@@ -155,13 +165,14 @@ if __name__ == "__main__":
     print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
     print ("The content of the data is: {}\n".format(a_great_sentence))
 
-    encoded_data, tree = huffman_encoding(a_great_sentence)
+    encoded_data, tree, codes = huffman_encoding(a_great_sentence)
     
     print (f"Tree size: {tree_size(tree)}")
     print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
     print ("The content of the encoded data is: {}\n".format(encoded_data))
 
-    decoded_data = huffman_decoding(encoded_data, tree)
+    #decoded_data = huffman_decoding(encoded_data, tree)
+    decoded_data = huffman_decoding2(encoded_data, {code: letter for letter, code in codes.items()})
 
     print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
     print ("The content of the encoded data is: {}\n".format(decoded_data))
