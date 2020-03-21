@@ -28,7 +28,9 @@ class TreeNode:
     def __repr__(self):
         return f"Node({self.symbol}, {self.frequency})"
 
-
+""" Generates huffman tree
+Uses min heap as a helper structure
+"""
 def huffman(data):
     # generate tree nodes with symbols and frequencies
     nodes_queue = [TreeNode(symbol, len(list(group))) for symbol, group in groupby(sorted(data))]
@@ -46,6 +48,10 @@ def huffman(data):
 
     return nodes_queue[0]
 
+""" Generates the huffman tree, traverse through it using recursion
+and returns hash table (letter -> code). Than runs through hash table and
+returns tuple of encoded data as a string and the tree
+"""
 def huffman_encoding(data):
     root = huffman(data)
     codes = {}
@@ -58,6 +64,10 @@ def huffman_encoding(data):
     
     return encoded_data, root
 
+""" While traversing attributes are removed to release some space in the tree
+Also hash table is generated to avoid traversing through the tree for each letter
+encoding
+"""
 def _huffman_encoding(codes, s, node):
     if node is None:
         return
@@ -71,7 +81,12 @@ def _huffman_encoding(codes, s, node):
         _huffman_encoding(codes, s + "0", node.left_child)
         _huffman_encoding(codes, s + "1", node.right_child)
 
-def huffman_decoding(data,tree):
+""" Traverses through the tree and decodes the data
+Uses input "byte" to determine where to go - to the left or right.
+When reaches a letter, adds it to the string and starts from the root
+again
+"""
+def huffman_decoding(data, tree):
     node = tree
     s = ""
     i = -1
