@@ -1,5 +1,6 @@
 
-import heapq
+import sys, heapq
+from collections import deque
 from itertools import groupby
 
 class TreeNode:
@@ -28,9 +29,9 @@ class TreeNode:
         return f"Node({self.symbol}, {self.frequency})"
 
 
-def huffman(input):
+def huffman(data):
     # generate tree nodes with symbols and frequencies
-    nodes_queue = [TreeNode(symbol, len(list(group))) for symbol, group in groupby(sorted(input))]
+    nodes_queue = [TreeNode(symbol, len(list(group))) for symbol, group in groupby(sorted(data))]
     
     # build priority queue - min frequency high priority (min_heap)
     heapq.heapify(nodes_queue)
@@ -38,27 +39,95 @@ def huffman(input):
     while len(nodes_queue) > 1:
         left = heapq.heappop(nodes_queue)
         right = heapq.heappop(nodes_queue)
-        print(left, right)
         parent = TreeNode(None, left.frequency + right.frequency)
-        parent.left = left
-        parent.rigth = right
+        parent.left_child = left
+        parent.right_child = right
         heapq.heappush(nodes_queue, parent) 
 
-    return nodes_queue
+    return nodes_queue[0]
 
 def huffman_encoding(data):
-    pass
+    root = huffman(data)
+    codes = {}
+    _huffman_encoding(codes, [], root)
+    
+    encoded_data = ""
+    for c in data:
+        encoded_data += codes[c]
+    
+    return encoded_data, root
+
+def _huffman_encoding(codes, s, node):
+    if node is None:
+        return
+
+    if node.symbol:
+        codes[node.symbol] = "".join(s)
+        return
+
+    if node.left_child:
+        s.append('0') 
+        _huffman_encoding(codes, s, node.left_child)
+        s.pop()
+    
+    if node.right_child:
+        s.append('1')
+        _huffman_encoding(codes, s, node.right_child)
+        s.pop()
 
 def huffman_decoding(data,tree):
-    pass
+    node = tree
+    s = ""
+    i = -1
+    while i < len(data) - 1:
+        if node.symbol:
+            s += node.symbol
+            node = tree
+        i += 1
+        if data[i] == '0':
+            node = node.left_child
+        else:
+            node = node.right_child
+
+    if node.symbol:
+        s += node.symbol
+        node = tree
+
+    return s
+
+def print_tree(root):
+    if root is None:
+        return
+    
+    q = deque()
+    current_level = 0
+    q.append((root, 0))
+    while len(q) > 0:
+        node, level = q.popleft()
+        
+        if level == 0:
+            print(node)
+            current_level += 1
+        elif level == current_level:
+            print(node, end=" ")
+        else:
+            print()
+            print(node, end=" ")
+            current_level += 1
+
+        if node.left_child is not None:
+            q.append((node.left_child, level + 1))
+        
+        if node.right_child is not None:
+            q.append((node.right_child, level + 1))
 
 if __name__ == "__main__":
     codes = {}
 
     a_great_sentence = "The bird is the word"
-    print (huffman(a_great_sentence))
+    #a_great_sentence = "Hello"
 
-"""     print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
+    print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
     print ("The content of the data is: {}\n".format(a_great_sentence))
 
     encoded_data, tree = huffman_encoding(a_great_sentence)
@@ -69,4 +138,4 @@ if __name__ == "__main__":
     decoded_data = huffman_decoding(encoded_data, tree)
 
     print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
-    print ("The content of the encoded data is: {}\n".format(decoded_data)) """
+    print ("The content of the encoded data is: {}\n".format(decoded_data))
