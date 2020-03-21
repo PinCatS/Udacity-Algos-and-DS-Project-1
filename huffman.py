@@ -49,7 +49,7 @@ def huffman(data):
 def huffman_encoding(data):
     root = huffman(data)
     codes = {}
-    _huffman_encoding(codes, [], root)
+    _huffman_encoding(codes, "", root)
     
     encoded_data = ""
     for c in data:
@@ -61,35 +61,31 @@ def _huffman_encoding(codes, s, node):
     if node is None:
         return
 
-    if node.symbol:
-        codes[node.symbol] = "".join(s)
-        return
+    delattr(node, 'frequency')
 
-    if node.left_child:
-        s.append('0') 
-        _huffman_encoding(codes, s, node.left_child)
-        s.pop()
-    
-    if node.right_child:
-        s.append('1')
-        _huffman_encoding(codes, s, node.right_child)
-        s.pop()
+    if node.symbol:
+        codes[node.symbol] = s
+    else:
+        delattr(node, 'symbol')
+        _huffman_encoding(codes, s + "0", node.left_child)
+        _huffman_encoding(codes, s + "1", node.right_child)
 
 def huffman_decoding(data,tree):
     node = tree
     s = ""
     i = -1
     while i < len(data) - 1:
-        if node.symbol:
-            s += node.symbol
+        if hasattr(node, 'symbol'):
+            s += node.symbol;
             node = tree
+
         i += 1
         if data[i] == '0':
             node = node.left_child
         else:
             node = node.right_child
 
-    if node.symbol:
+    if hasattr(node, 'symbol'):
         s += node.symbol
         node = tree
 
