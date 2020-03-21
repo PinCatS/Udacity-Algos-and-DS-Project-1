@@ -50,6 +50,7 @@ def huffman_encoding(data):
     root = huffman(data)
     codes = {}
     _huffman_encoding(codes, "", root)
+    print (f"Hash size: {sys.getsizeof(codes)}")
     
     encoded_data = ""
     for c in data:
@@ -117,6 +118,12 @@ def print_tree(root):
         if node.right_child is not None:
             q.append((node.right_child, level + 1))
 
+def tree_size(node):
+    if node is None:
+        return 0
+
+    return sys.getsizeof(node) + tree_size(node.left_child) + tree_size(node.right_child)
+
 if __name__ == "__main__":
     codes = {}
 
@@ -127,7 +134,8 @@ if __name__ == "__main__":
     print ("The content of the data is: {}\n".format(a_great_sentence))
 
     encoded_data, tree = huffman_encoding(a_great_sentence)
-
+    
+    print (f"Tree size: {tree_size(tree)}")
     print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
     print ("The content of the encoded data is: {}\n".format(encoded_data))
 
