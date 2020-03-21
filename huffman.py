@@ -3,6 +3,7 @@ import sys, heapq
 from collections import deque
 from itertools import groupby
 
+
 class TreeNode:
     def __init__(self, symbol, frequency):
         self.symbol = symbol
@@ -28,6 +29,7 @@ class TreeNode:
     def __repr__(self):
         return f"Node({self.symbol}, {self.frequency})"
 
+
 """ Generates huffman tree
 Uses min heap as a helper structure
 """
@@ -48,6 +50,7 @@ def huffman(data):
 
     return nodes_queue[0]
 
+
 """ Generates the huffman tree, traverse through it using recursion
 and returns hash table (letter -> code). Than runs through hash table and
 returns tuple of encoded data as a string and the tree
@@ -63,6 +66,7 @@ def huffman_encoding(data):
         encoded_data += codes[c]
     
     return encoded_data, root
+
 
 """ While traversing attributes are removed to release some space in the tree
 Also hash table is generated to avoid traversing through the tree for each letter
@@ -80,6 +84,7 @@ def _huffman_encoding(codes, s, node):
         delattr(node, 'symbol')
         _huffman_encoding(codes, s + "0", node.left_child)
         _huffman_encoding(codes, s + "1", node.right_child)
+
 
 """ Traverses through the tree and decodes the data
 Uses input "byte" to determine where to go - to the left or right.
@@ -107,6 +112,7 @@ def huffman_decoding(data, tree):
 
     return s
 
+
 def print_tree(root):
     if root is None:
         return
@@ -133,17 +139,18 @@ def print_tree(root):
         if node.right_child is not None:
             q.append((node.right_child, level + 1))
 
+
 def tree_size(node):
     if node is None:
         return 0
 
     return sys.getsizeof(node) + tree_size(node.left_child) + tree_size(node.right_child)
 
+
 if __name__ == "__main__":
     codes = {}
 
     a_great_sentence = "The bird is the word"
-    #a_great_sentence = "Hello"
 
     print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
     print ("The content of the data is: {}\n".format(a_great_sentence))
