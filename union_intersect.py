@@ -140,9 +140,38 @@ def union(llist_1, llist_2):
     return union_list
 
 def intersection(llist_1, llist_2):
-    # Your Solution Here
-    pass
+    if llist_1.head is None or llist_2.head is None:
+        return None
 
+    sorted_list_1_head = mergeSort(llist_1.head)
+    sorted_list_2_head = mergeSort(llist_2.head)
+
+    list_1_node = sorted_list_1_head
+    list_2_node = sorted_list_2_head
+
+    new_head = None
+    new_tail = None
+
+    while list_1_node is not None and list_2_node is not None:
+        if list_1_node.value < list_2_node.value:
+            list_1_node = list_1_node.next
+        elif list_1_node.value > list_2_node.value:
+            list_2_node = list_2_node.next
+        else:
+            node = Node(list_1_node.value)
+            if new_head is None:
+                new_head = node
+                new_tail = new_head
+            else:
+                new_tail.next = node
+                new_tail = new_tail.next
+            list_1_node = list_1_node.next
+            list_2_node = list_2_node.next
+
+    intersection_list = LinkedList()
+    intersection_list.head = new_head
+    return intersection_list
+                  
 
 # Test case 1
 
@@ -161,9 +190,7 @@ for i in element_1:
 for i in element_2:
     linked_list_2.append(i)
 
-print (union(linked_list_1,linked_list_2))
-print(linked_list_1)
-print(linked_list_2)
+#print (union(linked_list_1,linked_list_2))
 print (intersection(linked_list_1,linked_list_2))
 
 # Test case 2
@@ -180,5 +207,5 @@ for i in element_1:
 for i in element_2:
     linked_list_4.append(i)
 
-print (union(linked_list_3,linked_list_4))
+#print (union(linked_list_3,linked_list_4))
 print (intersection(linked_list_3,linked_list_4))
