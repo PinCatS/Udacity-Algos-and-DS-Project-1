@@ -41,6 +41,79 @@ class LinkedList:
 
         return size
 
+
+def get_middle(head):
+    if head is None:
+        return head
+    
+    slow = head
+    fast = head
+
+    while fast.next is not None and fast.next.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+
+    return slow
+
+
+def sortedMerge(left, right):
+    if left is None:
+        return right
+
+    if right is None:
+        return left
+
+    node_left = left
+    node_right = right
+
+    new_head = None
+
+    if node_left.value <= node_right.value:
+        node = Node(node_left.value)
+        new_head = node
+        node_left = node_left.next
+    else:
+        node = Node(node_right.value)
+        new_head = node
+        node_right = node_right.next
+    
+    new_tail = new_head
+
+    while node_left is not None and node_right is not None:
+        if node_left.value <= node_right.value:
+            node = Node(node_left.value)
+            node_left = node_left.next
+        else:
+            node = Node(node_right.value)
+            node_right = node_right.next
+        
+        new_tail.next = node
+        new_tail = new_tail.next
+
+    if node_left is None:
+        new_tail.next = node_right
+    else:
+        new_tail.next = node_left
+    
+    return new_head
+
+def mergeSort(head):
+    if head is None or head.next is None:
+        return head
+
+    middle = get_middle(head)
+    next_to_middle = middle.next
+
+    #split the list into two halves
+    middle.next = None
+
+    left = mergeSort(head)
+    right = mergeSort(next_to_middle)
+
+    sorted_list_head = sortedMerge(left, right)
+
+    return sorted_list_head
+
 def union(llist_1, llist_2):
     # Your Solution Here
     pass
@@ -58,11 +131,18 @@ linked_list_2 = LinkedList()
 element_1 = [3,2,4,35,6,65,6,4,3,21]
 element_2 = [6,32,4,9,6,1,11,21,1]
 
+#element_1 = [1, 2, 3]
+#element_2 = [2, 3, 6]
+
 for i in element_1:
     linked_list_1.append(i)
 
 for i in element_2:
     linked_list_2.append(i)
+
+sorted_list = LinkedList()
+sorted_list.head = mergeSort(linked_list_1.head)
+print(sorted_list)
 
 print (union(linked_list_1,linked_list_2))
 print (intersection(linked_list_1,linked_list_2))

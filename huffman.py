@@ -112,7 +112,7 @@ def huffman_decoding(data, tree):
 
     return s
 
-def huffman_decoding2(data, codes):
+def huffman_decoding_by_hash(data, codes):
     code = ""
     msg = ""
     for c in data:
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     print ("The content of the encoded data is: {}\n".format(encoded_data))
 
     #decoded_data = huffman_decoding(encoded_data, tree)
-    decoded_data = huffman_decoding2(encoded_data, {code: letter for letter, code in codes.items()})
+    decoded_data = huffman_decoding_by_hash(encoded_data, {code: letter for letter, code in codes.items()})
 
     print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
     print ("The content of the encoded data is: {}\n".format(decoded_data))
