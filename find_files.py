@@ -64,10 +64,22 @@ def find_files(suffix, path):
 
 # Tests
 print(find_files('.c', './testdir'))
+# ['./testdir/t1.c', './testdir/subdir5/a.c',
+# './testdir/subdir5/b.c', './testdir/subdir1/a.c',
+# './testdir/subdir3/subsubdir1/b.c']
 print(find_files('.c', './testdir/t1.c'))
+# ['./testdir/t1.c']
 print(find_files('.c', '.'))
+# ['./testdir/t1.c', './testdir/subdir5/a.c',
+# './testdir/subdir5/b.c', './testdir/subdir1/a.c',
+# './testdir/subdir3/subsubdir1/b.c']
 print(find_files('.c', ''))
+# []
 print(find_files('.c', None))
+# []
 print(find_files('.c', './testdir/subdir2'))
+# []
 print(find_files('.c', './testdir/subdir1/a.h'))
+# []
 print(find_files('.c', './testdir/subdir2/.gitkeep'))
+# []
