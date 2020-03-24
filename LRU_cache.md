@@ -24,4 +24,10 @@ I store keys with values in the nodes as well because while removing element fro
 
 For debugging purpose, I redefined __repr__ functions.
 
+Summary of complexities:
+get operation O(1)
+set operation O(1)
+
+space complexity is O(n) but if to look into details, we need to store 2n keys + n values, so roughly we get O(3n)
+
 
