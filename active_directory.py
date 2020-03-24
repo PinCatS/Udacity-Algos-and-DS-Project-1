@@ -37,12 +37,8 @@ class Group(object):
 
     def get_name(self):
         return self.name
-    
-"""Uses BFS to find a user
-Complexity: 
-    Time O(n) where n is a total number of users
-    Space O(m) where m is max(groups lists)
-"""
+
+
 def is_user_in_group(user, group):
     """
     Return True if user is in the group, False otherwise.
@@ -78,11 +74,16 @@ sub_child.add_user(sub_child_user)
 child.add_group(sub_child)
 parent.add_group(child)
 
-print(is_user_in_group("sub_child_user", parent))
-print(is_user_in_group("sub_child", parent))
+# Test 1
+print(is_user_in_group("sub_child_user", parent))  #  True
 
-parent = Group("empty_parent")
-print(is_user_in_group("sub_child_user", parent))
+# Test 2
+print(is_user_in_group("sub_child", parent))       #  False
 
+# Test 3
+parent = Group("empty_parent")                    
+print(is_user_in_group("sub_child_user", parent))  #  False
+
+# Test 4
 parent = None
-print(is_user_in_group("sub_child_user", parent))
+print(is_user_in_group("sub_child_user", parent))  #  False
