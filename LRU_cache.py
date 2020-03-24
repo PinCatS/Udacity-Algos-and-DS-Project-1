@@ -50,7 +50,6 @@ class DoubleLinkedList:
 
         self.num_of_nodes -= 1
 
-
     def size(self):
         return self.num_of_nodes
 
@@ -66,7 +65,6 @@ class DoubleLinkedList:
 
 
 class LRU_Cache(object):
-
     def __init__(self, capacity = 10):
         self.map = dict()
         self.storage = DoubleLinkedList()
@@ -110,38 +108,44 @@ class LRU_Cache(object):
         s += f"\nlist => {self.storage}"
         return s
 
+
 # Tests
 our_cache = LRU_Cache(5)
-print(our_cache)
 
-res = our_cache.get(6)
-print(our_cache)
-print(res)
+value = our_cache.get(6)     # returns -1
+print(value)                
 
 our_cache.set(1, 1);
-print(our_cache)
 our_cache.set(2, 2);
-print(our_cache)
 our_cache.set(3, 3);
-print(our_cache)
 our_cache.set(4, 4);
-print(our_cache)
 
+# get the same value 5 times to check that we don't pop other values
+value = our_cache.get(1)     # returns 1
+print(value)
+value = our_cache.get(1)     # returns 1
+print(value)
+value = our_cache.get(1)     # returns 1
+print(value)
+value = our_cache.get(1)     # returns 1
+print(value)
+value = our_cache.get(1)     # returns 1
+print(value)
 
-res = our_cache.get(1)       # returns 1
-print(our_cache)
-print(res)
-res = our_cache.get(2)       # returns 2
-print(our_cache)
-print(res)
-res = our_cache.get(9)      # returns -1 because 9 is not present in the cache
-print(our_cache)
-print(res)
+value = our_cache.get(2)     # returns 2
+print(value)
+value = our_cache.get(9)     # returns -1 because 9 is not present in the cache
+print(value)
 
 our_cache.set(5, 5)
-print(our_cache)
 our_cache.set(6, 6)
-print(our_cache)
 
-res = our_cache.get(3)      # returns -1 because the cache reached it's capacity and 3 was the least recently used entry
-print(res)
+value = our_cache.get(3)     # returns -1 because the cache reached it's capacity and 3 was the least recently used entry
+print(value)
+
+our_cache.set(5, 8)          # check that we replace the value in case the key is already there
+value = our_cache.get(5)     # returns 8
+print(value)
+
+value = our_cache.get(1)     # returns 1 (check that previous get didn't pop the least recent but only replaced)
+print(value)
