@@ -8,8 +8,11 @@ class Node:
 
 
 class LinkedList:
-    def __init__(self):
+    def __init__(self, pylist = None):
         self.head = None
+        if pylist is not None:
+            for e in pylist:
+                self.append(e)
 
     def __str__(self):
         cur_head = self.head
@@ -17,11 +20,12 @@ class LinkedList:
         while cur_head:
             out_string += str(cur_head.value) + " -> "
             cur_head = cur_head.next
+        
+        if len(out_string) == 0:
+            return "<empty>"
         return out_string
 
-
     def append(self, value):
-
         if self.head is None:
             self.head = Node(value)
             return
@@ -97,6 +101,7 @@ def sortedMerge(left, right):
     
     return new_head
 
+# modifies original list and return the new one
 def mergeSort(head):
     if head is None or head.next is None:
         return head
@@ -114,6 +119,29 @@ def mergeSort(head):
 
     return sorted_list_head
 
+
+def copy_list(llist):
+    if llist is None or llist.head is None :
+        return llist
+
+    node = llist.head
+    new_head = None
+    new_tail = new_head
+    while node is not None:
+        new_node = Node(node.value)
+        if node == llist.head:
+            new_head = new_node
+            new_tail = new_head
+        else:
+            new_tail.next = new_node
+            new_tail = new_tail.next
+        node = node.next
+
+    new_llist = LinkedList()
+    new_llist.head = new_head
+    return new_llist
+
+
 def union(llist_1, llist_2):
 
     if llist_1.head == None:
@@ -122,12 +150,16 @@ def union(llist_1, llist_2):
     if llist_2.head == None:
         return llist_1
 
-    sorted_list_1_head = mergeSort(llist_1.head)
-    sorted_list_2_head = mergeSort(llist_2.head)
+    copy_list_1 = copy_list(llist_1)
+    copy_list_2 = copy_list(llist_2)
+
+    sorted_list_1_head = mergeSort(copy_list_1.head)
+    sorted_list_2_head = mergeSort(copy_list_2.head)
     merged_list_head = sortedMerge(sorted_list_1_head, sorted_list_2_head)
     
+    # run through the list and remove duplicates
     node = merged_list_head
-    while node.next is not None:
+    while node is not None and node.next is not None:
         if node.value == node.next.value:
             current_node = node
             while node.next is not None and node.value == node.next.value:
@@ -139,12 +171,16 @@ def union(llist_1, llist_2):
     union_list.head = merged_list_head
     return union_list
 
+
 def intersection(llist_1, llist_2):
     if llist_1.head is None or llist_2.head is None:
-        return None
+        return LinkedList()
 
-    sorted_list_1_head = mergeSort(llist_1.head)
-    sorted_list_2_head = mergeSort(llist_2.head)
+    copy_list_1 = copy_list(llist_1)
+    copy_list_2 = copy_list(llist_2)
+
+    sorted_list_1_head = mergeSort(copy_list_1.head)
+    sorted_list_2_head = mergeSort(copy_list_2.head)
 
     list_1_node = sorted_list_1_head
     list_2_node = sorted_list_2_head
@@ -152,6 +188,8 @@ def intersection(llist_1, llist_2):
     new_head = None
     new_tail = None
 
+    # run through the list and pick those which are the same
+    # duplicates are allowed
     while list_1_node is not None and list_2_node is not None:
         if list_1_node.value < list_2_node.value:
             list_1_node = list_1_node.next
@@ -171,41 +209,85 @@ def intersection(llist_1, llist_2):
     intersection_list = LinkedList()
     intersection_list.head = new_head
     return intersection_list
-                  
 
-# Test case 1
+
+# Test case 0
+print("Test case 0")
 
 linked_list_1 = LinkedList()
 linked_list_2 = LinkedList()
 
-element_1 = [3,2,4,35,6,65,6,4,3,21]
-element_2 = [6,32,4,9,6,1,11,21,1]
+print (union(linked_list_1,linked_list_2))          # expected empty
+print (intersection(linked_list_1,linked_list_2))   # expected empty
 
-#element_1 = [1, 2, 3]
-#element_2 = [2, 3, 6]
+# Test case 1
+print("Test case 1")
 
-for i in element_1:
-    linked_list_1.append(i)
+linked_list_1 = LinkedList([])
+linked_list_2 = LinkedList([])
 
-for i in element_2:
-    linked_list_2.append(i)
-
-#print (union(linked_list_1,linked_list_2))
-print (intersection(linked_list_1,linked_list_2))
+print (union(linked_list_1,linked_list_2))          # expected empty
+print (intersection(linked_list_1,linked_list_2))   # expected empty
 
 # Test case 2
+print("Test case 2")
 
-linked_list_3 = LinkedList()
-linked_list_4 = LinkedList()
+linked_list_1 = LinkedList([1])
+linked_list_2 = LinkedList([])
 
-element_1 = [3,2,4,35,6,65,6,4,3,23]
-element_2 = [1,7,8,9,11,21,1]
+print (union(linked_list_1,linked_list_2))          # expected 1
+print (intersection(linked_list_1,linked_list_2))   # expected empty
 
-for i in element_1:
-    linked_list_3.append(i)
+# Test case 3
+print("Test case 3")
 
-for i in element_2:
-    linked_list_4.append(i)
+linked_list_1 = LinkedList([])
+linked_list_2 = LinkedList([1])
 
-#print (union(linked_list_3,linked_list_4))
-print (intersection(linked_list_3,linked_list_4))
+print (union(linked_list_1,linked_list_2))          # expected 1
+print (intersection(linked_list_1,linked_list_2))   # expected empty
+
+# Test case 4
+print("Test case 4")
+
+linked_list_1 = LinkedList([1])
+linked_list_2 = LinkedList([1])
+
+print (union(linked_list_1,linked_list_2))          # expected 1
+print (intersection(linked_list_1,linked_list_2))   # expected 1
+
+# Test case 5
+print("Test case 5")
+
+linked_list_1 = LinkedList([1, 1])
+linked_list_2 = LinkedList([1, 1])
+
+print (union(linked_list_1,linked_list_2))          # expected 1
+print (intersection(linked_list_1,linked_list_2))   # expected 1->1
+
+# Test case 6
+print("Test case 6")
+
+linked_list_1 = LinkedList([1, 1])
+linked_list_2 = LinkedList([1, 1, 2])
+
+print (union(linked_list_1,linked_list_2))          # expected 1->2
+print (intersection(linked_list_1,linked_list_2))   # expected 1->1
+
+# Test case 7
+print("Test case 7")
+
+linked_list_1 = LinkedList([3,2,4,35,6,65,6,4,3,21])
+linked_list_2 = LinkedList([6,32,4,9,6,1,11,21,1])
+
+print (union(linked_list_1,linked_list_2))          # expected 1->2->3->4->6->9->11->21->32->35->65
+print (intersection(linked_list_1,linked_list_2))   # expected 4->6->6->21
+
+# Test case 8
+print("Test case 2")
+
+linked_list_3 = LinkedList([3,2,4,35,6,65,6,4,3,23])
+linked_list_4 = LinkedList([1,7,8,9,11,21,1])
+
+print (union(linked_list_3,linked_list_4))          # expected 1->2->3->4->6->7->8->9->11->21->23->35->65
+print (intersection(linked_list_3,linked_list_4))   # expected empty
