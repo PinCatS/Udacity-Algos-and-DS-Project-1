@@ -40,9 +40,10 @@ class Blockchain:
         self.tail = self.head
         self.size = 1
 
-    def add(self, data):
-        timestamp = strftime("%H:%M %m/%d/%Y", gmtime())
-        block = Block(timestamp, data, self.last_block.index + 1, self.last_block.hash)
+    def add(self, block):
+        if block.previous_hash != self.last_block.previous_hash:
+            return
+
         node = Node(block)
         node.next = self.head
         self.head = node
@@ -60,7 +61,7 @@ class Blockchain:
         
         return current_node.value
 
-    def size(self):
+    def get_size(self):
         return self.size
     
     def _build_genesis_block(self):
@@ -86,12 +87,49 @@ class Blockchain:
             current_node = current_node.next
         return s
 
+# Tests
 chain = Blockchain()
-print(chain)
-chain.add('transaction 1')
-chain.add('transaction 2')
-chain.add('transaction 3')
-print(chain)
 
+# Test 1: expected size 1. Genesis block is there
+print("Test 1")
+print(chain)
+print(f"Chain size: {chain.get_size()}")
+
+# Test 2: expected size 4. 3 transaction bocks are there
+print("Test 2")
+block = Block(strftime("%H:%M %m/%d/%Y", gmtime()),
+                        "transaction 1",
+                        chain.last_block.index + 1,
+                        chain.last_block.previous_hash)
+chain.add(block)
+
+block = Block(strftime("%H:%M %m/%d/%Y", gmtime()),
+                        "transaction 2",
+                        chain.last_block.index + 1,
+                        chain.last_block.previous_hash)
+chain.add(block)
+
+block = Block(strftime("%H:%M %m/%d/%Y", gmtime()),
+                        "transaction 3",
+                        chain.last_block.index + 1,
+                        chain.last_block.previous_hash)
+chain.add(block)
+
+print(chain)
+print("Chain size: ", chain.get_size())
+
+#Test 3: Expected: size 4. Block with "Transaction 4" wasn't added due to prev hash mismatch
+print("Test 3")
+block = Block(strftime("%H:%M %m/%d/%Y", gmtime()),
+                        "transaction 4",
+                        chain.last_block.index + 1,
+                        "u9acd81a49c5ffe5c95c10a7c3793e70b784188bb3c02f7417b66f3fd732a56b")
+chain.add(block)
+
+print(chain)
+print("Chain size: ", chain.get_size())
+
+#Test 4: Expected: block with "Transaction 3"
+print("Test 4")
 print(chain.get(3))
 
